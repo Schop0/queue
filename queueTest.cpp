@@ -2,6 +2,8 @@
 
 #include "queue.hpp"
 
+#define TESTVALUE 0x55
+
 TEST_GROUP(queue)
 {
 	void setup()
@@ -13,7 +15,8 @@ TEST_GROUP(queue)
 	}
 };
 
-TEST(queue, init)
+TEST(queue, singleElement)
 {
-	FAIL("CppUTest says Hi!");
+	q_push(TESTVALUE);
+	LONGS_EQUAL(TESTVALUE, q_pop());
 }
