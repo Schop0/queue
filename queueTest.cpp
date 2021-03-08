@@ -3,11 +3,13 @@
 #include "queue.hpp"
 
 #define TESTVALUE 0x55
+#define RANDVALUE (rand() % 0xff)
 
 TEST_GROUP(queue)
 {
 	void setup()
 	{
+		srand(TESTVALUE);
 	}
 
 	void teardown()
@@ -19,6 +21,20 @@ TEST_GROUP(queue)
 		q_push(value);
 		LONGS_EQUAL(value, q_pop());
 	}
+	
+	void test_push_pop_random_data(size_t length)
+	{
+		uint8_t data[length];
+		unsigned int i;
+
+		for(i=0; i<length; i++) {
+			data[i] = RANDVALUE;
+			q_push(data[i]);
+		}
+
+		for(i=0; i<length; i++)
+			LONGS_EQUAL(data[i], q_pop());
+	}
 };
 
 TEST(queue, singleElement)
@@ -28,19 +44,11 @@ TEST(queue, singleElement)
 
 TEST(queue, twoElementsSequential)
 {
-	srand(TESTVALUE);
-	test_push_pop(rand() % 0xff);
-	test_push_pop(rand() % 0xff);
+	test_push_pop(RANDVALUE);
+	test_push_pop(RANDVALUE);
 }
 
 TEST(queue, twoElementsSimultaneous)
 {
-	srand(TESTVALUE);
-	uint8_t val[2];
-	val[0] = rand() % 0xff;
-	val[1] = rand() % 0xff;
-	q_push(val[0]);
-	q_push(val[1]);
-	LONGS_EQUAL(val[0], q_pop());
-	LONGS_EQUAL(val[1], q_pop());
+	test_push_pop_random_data(2);
 }
