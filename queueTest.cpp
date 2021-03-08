@@ -20,3 +20,15 @@ TEST(queue, singleElement)
 	q_push(TESTVALUE);
 	LONGS_EQUAL(TESTVALUE, q_pop());
 }
+
+TEST(queue, twoElements)
+{
+	uint8_t testvalue;
+	srand(TESTVALUE);
+
+	testvalue = rand() % 0xff;
+	LONGS_EQUAL(testvalue, q_pop());
+
+	testvalue = rand() % 0xff;
+	LONGS_EQUAL(testvalue, q_pop());
+}
