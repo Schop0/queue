@@ -21,7 +21,7 @@ TEST_GROUP(queue)
 		q_push(value);
 		LONGS_EQUAL(value, q_pop());
 	}
-	
+
 	void test_push_pop_random_data(size_t length)
 	{
 		uint8_t data[length];
@@ -51,4 +51,9 @@ TEST(queue, twoElementsSequential)
 TEST(queue, twoElementsSimultaneous)
 {
 	test_push_pop_random_data(2);
+}
+
+TEST(queue, maxElementsSimultaneous)
+{
+	test_push_pop_random_data(q_max());
 }
