@@ -13,24 +13,22 @@ TEST_GROUP(queue)
 	void teardown()
 	{
 	}
+
+	void test_push_pop(uint8_t value)
+	{
+		q_push(value);
+		LONGS_EQUAL(value, q_pop());
+	}
 };
 
 TEST(queue, singleElement)
 {
-	q_push(TESTVALUE);
-	LONGS_EQUAL(TESTVALUE, q_pop());
+	test_push_pop(TESTVALUE);
 }
 
-TEST(queue, twoElements)
+TEST(queue, twoElementsSequential)
 {
-	uint8_t testvalue;
 	srand(TESTVALUE);
-
-	testvalue = rand() % 0xff;
-	q_push(testvalue);
-	LONGS_EQUAL_TEXT(testvalue, q_pop(), "First");
-
-	testvalue = rand() % 0xff;
-	q_push(testvalue);
-	LONGS_EQUAL_TEXT(testvalue, q_pop(), "Second");
+	test_push_pop(rand() % 0xff);
+	test_push_pop(rand() % 0xff);
 }
