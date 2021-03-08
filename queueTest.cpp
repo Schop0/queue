@@ -32,3 +32,15 @@ TEST(queue, twoElementsSequential)
 	test_push_pop(rand() % 0xff);
 	test_push_pop(rand() % 0xff);
 }
+
+TEST(queue, twoElementsSimultaneous)
+{
+	srand(TESTVALUE);
+	uint8_t val[2];
+	val[0] = rand() % 0xff;
+	val[1] = rand() % 0xff;
+	q_push(val[0]);
+	q_push(val[1]);
+	LONGS_EQUAL(val[0], q_pop());
+	LONGS_EQUAL(val[1], q_pop());
+}
