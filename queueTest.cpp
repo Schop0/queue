@@ -27,8 +27,10 @@ TEST(queue, twoElements)
 	srand(TESTVALUE);
 
 	testvalue = rand() % 0xff;
-	LONGS_EQUAL(testvalue, q_pop());
+	q_push(testvalue);
+	LONGS_EQUAL_TEXT(testvalue, q_pop(), "First");
 
 	testvalue = rand() % 0xff;
-	LONGS_EQUAL(testvalue, q_pop());
+	q_push(testvalue);
+	LONGS_EQUAL_TEXT(testvalue, q_pop(), "Second");
 }
