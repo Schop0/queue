@@ -13,3 +13,8 @@ uint8_t q_pop(void)
 {
 	return *tail++;
 }
+
+size_t q_max(void)
+{
+	return sizeof data;
+}
