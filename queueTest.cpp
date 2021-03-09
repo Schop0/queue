@@ -88,3 +88,11 @@ TEST(queue, initVoidData)
 
 	CHECK_FALSE(q_init(&queue, NULL, 2));
 }
+
+TEST(queue, initZeroSize)
+{
+	uint8_t buffer[2] = {0};
+	queue_t queue = {0};
+
+	CHECK_FALSE(q_init(&queue, buffer, 0));
+}
