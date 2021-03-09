@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct {
 	size_t size;
@@ -9,7 +10,7 @@ typedef struct {
 
 extern queue_t *q;
 
-void q_init(queue_t *q, uint8_t *buffer, size_t size);
+bool q_init(queue_t *q, uint8_t *buffer, size_t size);
 void q_push(uint8_t value);
 uint8_t q_pop(void);
 size_t q_max(void);
