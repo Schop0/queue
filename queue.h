@@ -9,6 +9,7 @@ typedef struct {
 
 extern queue_t *q;
 
+void q_init(queue_t *q, uint8_t *buffer, size_t length);
 void q_push(uint8_t value);
 uint8_t q_pop(void);
 size_t q_max(void);
