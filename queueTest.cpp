@@ -23,7 +23,7 @@ TEST_GROUP(queue)
 	void test_push_pop(uint8_t value)
 	{
 		q_push(value);
-		LONGS_EQUAL(value, q_pop());
+		BYTES_EQUAL(value, q_pop());
 	}
 
 	void test_push_pop_random_data(size_t length)
@@ -37,7 +37,7 @@ TEST_GROUP(queue)
 		}
 
 		for(i=0; i<length; i++)
-			LONGS_EQUAL(data[i], q_pop());
+			BYTES_EQUAL(data[i], q_pop());
 	}
 };
 
