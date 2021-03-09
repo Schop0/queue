@@ -6,7 +6,7 @@ queue_t *q = &queue;
 
 bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 {
-	if(!q || !buffer)
+	if(!q || !buffer || !size)
 		return false;
 
 	q->buff = buffer;
