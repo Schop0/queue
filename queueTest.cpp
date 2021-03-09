@@ -61,3 +61,16 @@ TEST(queue, maxElementsSimultaneous)
 {
 	test_push_pop_random_data(q_max());
 }
+
+TEST(queue, initQueue)
+{
+	uint8_t buffer[2] = {0};
+	queue_t queue = {0};
+
+	q_init(&queue, buffer, sizeof buffer);
+
+	UNSIGNED_LONGS_EQUAL(sizeof buffer, queue.length);
+	POINTERS_EQUAL(buffer, queue.data);
+	POINTERS_EQUAL(buffer, queue.head);
+	POINTERS_EQUAL(buffer, queue.tail);
+}
