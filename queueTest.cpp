@@ -1,6 +1,7 @@
 #include "CppUTest/TestHarness.h"
 
 #include "queue.hpp"
+#include <cstring>
 
 #define TESTVALUE 0x55
 #define RANDVALUE (rand() % 0xff)
@@ -10,6 +11,9 @@ TEST_GROUP(queue)
 	void setup()
 	{
 		srand(TESTVALUE);
+		q->head = q->data;
+		q->tail = q->data;
+		memset(q->data, TESTVALUE, q->length);
 	}
 
 	void teardown()
