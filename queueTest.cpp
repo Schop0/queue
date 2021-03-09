@@ -75,9 +75,16 @@ TEST(queue, initQueue)
 	POINTERS_EQUAL(buffer, queue.tail);
 }
 
-TEST(queue, initVoid)
+TEST(queue, initVoidQueue)
 {
 	uint8_t buffer[2] = {0};
 
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
+}
+
+TEST(queue, initVoidData)
+{
+	queue_t queue = {0};
+
+	CHECK_FALSE(q_init(&queue, NULL, 2));
 }
