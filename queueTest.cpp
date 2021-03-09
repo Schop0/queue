@@ -11,9 +11,9 @@ TEST_GROUP(queue)
 	void setup()
 	{
 		srand(TESTVALUE);
-		q->head = q->data;
-		q->tail = q->data;
-		memset(q->data, TESTVALUE, q->length);
+		q->head = q->buff;
+		q->tail = q->buff;
+		memset(q->buff, TESTVALUE, q->size);
 	}
 
 	void teardown()
@@ -69,8 +69,8 @@ TEST(queue, initQueue)
 
 	q_init(&queue, buffer, sizeof buffer);
 
-	UNSIGNED_LONGS_EQUAL(sizeof buffer, queue.length);
-	POINTERS_EQUAL(buffer, queue.data);
+	UNSIGNED_LONGS_EQUAL(sizeof buffer, queue.size);
+	POINTERS_EQUAL(buffer, queue.buff);
 	POINTERS_EQUAL(buffer, queue.head);
 	POINTERS_EQUAL(buffer, queue.tail);
 }
