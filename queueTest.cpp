@@ -67,10 +67,17 @@ TEST(queue, initQueue)
 	uint8_t buffer[2] = {0};
 	queue_t queue = {0};
 
-	q_init(&queue, buffer, sizeof buffer);
+	CHECK(q_init(&queue, buffer, sizeof buffer));
 
 	UNSIGNED_LONGS_EQUAL(sizeof buffer, queue.size);
 	POINTERS_EQUAL(buffer, queue.buff);
 	POINTERS_EQUAL(buffer, queue.head);
 	POINTERS_EQUAL(buffer, queue.tail);
+}
+
+TEST(queue, initVoid)
+{
+	uint8_t buffer[2] = {0};
+
+	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 }
