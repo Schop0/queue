@@ -8,9 +8,7 @@ typedef struct {
 	uint8_t *tail;
 } queue_t;
 
-extern queue_t *q;
-
-bool q_init(queue_t *q, uint8_t *buffer, size_t size);
-void q_push(uint8_t value);
-uint8_t q_pop(void);
-size_t q_max(void);
+bool    q_init(queue_t *q, uint8_t *buffer, size_t size);
+void    q_push(queue_t *q, uint8_t value);
+uint8_t q_pop (queue_t *q);
+size_t  q_max (queue_t *q);

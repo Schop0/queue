@@ -1,9 +1,5 @@
 #include "queue.h"
 
-uint8_t buff[2];
-queue_t queue = {2, buff, buff};
-queue_t *q = &queue;
-
 bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 {
 	if(!q || !buffer || !size)
@@ -17,17 +13,17 @@ bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 	return true;
 }
 
-void q_push(uint8_t value)
+void q_push(queue_t *q, uint8_t value)
 {
 	*(q->head)++ = value;
 }
 
-uint8_t q_pop(void)
+uint8_t q_pop(queue_t *q)
 {
 	return *(q->tail)++;
 }
 
-size_t q_max(void)
+size_t q_max(queue_t *q)
 {
 	return q->size;
 }
