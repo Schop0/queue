@@ -81,12 +81,27 @@ TEST(queue, initQueue)
 	POINTERS_EQUAL(buffer, queue.tail);
 }
 
-TEST(queue, initVoidQueue)
+TEST(queue, initNull)
 {
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 }
 
-TEST(queue, initVoidData)
+TEST(queue, pushToNull)
+{
+	q_push(NULL, RANDVALUE);
+}
+
+TEST(queue, popFromNull)
+{
+	q_pop(NULL);
+}
+
+TEST(queue, maxSizeOfNull)
+{
+	q_max(NULL);
+}
+
+TEST(queue, initNullData)
 {
 	CHECK_FALSE(q_init(&queue, NULL, sizeof buffer));
 }
