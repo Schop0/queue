@@ -5,12 +5,14 @@
 #include <iostream>
 
 #define TESTSIZE_SMALL 2
+#define TESTSIZE_LARGE 1025
 #define TESTVALUE 0x55
 #define RANDVALUE (rand() % 0xff)
 
 TEST_GROUP(queue)
 {
 	uint8_t buffer[TESTSIZE_SMALL];
+	uint8_t bigbuf[TESTSIZE_LARGE]; // Not initialised
 	queue_t queue;
 
 	void setup()
@@ -92,4 +94,13 @@ TEST(queue, initVoidData)
 TEST(queue, initZeroSize)
 {
 	CHECK_FALSE(q_init(&queue, buffer, 0));
+}
+
+TEST(queue, maxSize)
+{
+	CHECK(q_init(&queue, buffer, sizeof buffer));
+	UNSIGNED_LONGS_EQUAL(sizeof buffer, q_max(&queue));
+
+	CHECK(q_init(&queue, bigbuf, sizeof bigbuf));
+	UNSIGNED_LONGS_EQUAL(sizeof bigbuf, q_max(&queue));
 }
