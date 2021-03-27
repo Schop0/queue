@@ -161,6 +161,11 @@ TEST(queue, boundsProtection)
 
 // Do not clobber elements when full, reject more
 // Accept all possible binary values for data
+// Let caller detect a failed push
+// Reject popping from an empty queue
+// Let caller detect a failed pop
+// Provide a way to determine free space
+// Provide a way to determine used space
 // (how?) multiple independent instances
 // (every method) Do not dereference null pointers
 // (every method) Do not dereference pointers outside the storage area
