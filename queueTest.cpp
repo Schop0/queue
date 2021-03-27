@@ -18,8 +18,8 @@ TEST_GROUP(queue)
 
 	void setup()
 	{
-		memset(buffer, TESTVALUE, sizeof buffer);
-		memset(&queue, TESTVALUE, sizeof queue );
+		memset(buffer, MARKVALUE, sizeof buffer);
+		memset(&queue, MARKVALUE, sizeof queue );
 		srand(TESTVALUE);
 	}
 
