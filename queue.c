@@ -27,6 +27,11 @@ static bool isEmpty(const queue_t *q)
 	return q->tail == NULL;
 }
 
+static bool isFull(const queue_t *q)
+{
+	return q->tail == q->head;
+}
+
 static void setEmpty(queue_t *q)
 {
 	q->tail = NULL;
@@ -50,11 +55,14 @@ void q_push(queue_t *q, uint8_t value)
 	if(!q)
 		return;
 
+	if(isFull(q))
+		return;
+
 	*q->head = value;
 
 	if(isEmpty(q))
 		q->tail = q->head;
-	
+
 	increment_ptr(q, &q->head);
 }
 
