@@ -18,6 +18,9 @@ void q_push(queue_t *q, uint8_t value)
 	if(!q)
 		return;
 
+	if(q->head >= (q->buff + q->size))
+		return;
+
 	*(q->head)++ = value;
 }
 
