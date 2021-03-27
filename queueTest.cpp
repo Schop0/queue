@@ -75,7 +75,7 @@ TEST(queue, twoElementsSimultaneous)
 TEST(queue, maxElementsSimultaneous)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	test_push_pop_random_data(q_max(&queue), 0);
+	test_push_pop_random_data(q_size(&queue), 0);
 }
 
 // Do not dereference null pointer
@@ -84,7 +84,7 @@ TEST(queue, initNull)
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 	q_push(NULL, RANDVALUE);
 	q_pop(NULL);
-	q_max(NULL);
+	q_size(NULL);
 }
 
 // Refuse to intialise without a buffer
@@ -98,18 +98,18 @@ TEST(queue, initNullData)
 TEST(queue, maxSize)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	UNSIGNED_LONGS_EQUAL(sizeof buffer, q_max(&queue));
+	UNSIGNED_LONGS_EQUAL(sizeof buffer, q_size(&queue));
 
 	CHECK(q_init(&queue, bigbuf, sizeof bigbuf));
-	UNSIGNED_LONGS_EQUAL(sizeof bigbuf, q_max(&queue));
+	UNSIGNED_LONGS_EQUAL(sizeof bigbuf, q_size(&queue));
 }
 
 // Store and retrieve more than the maximum elements, in smaller batches
 TEST(queue, maxElementsMultipleTimes)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	test_push_pop_random_data(q_max(&queue), 0);
-	test_push_pop_random_data(q_max(&queue), 0);
+	test_push_pop_random_data(q_size(&queue), 0);
+	test_push_pop_random_data(q_size(&queue), 0);
 }
 
 // Do not write outside the storage bounds
@@ -138,7 +138,7 @@ TEST(queue, pushAfterPopFromEmpty)
 	test_push_pop(RANDVALUE);
 
 	q_pop(&queue);
-	test_push_pop_random_data(q_max(&queue), 0);
+	test_push_pop_random_data(q_size(&queue), 0);
 }
 
 // Accept all possible binary values for data

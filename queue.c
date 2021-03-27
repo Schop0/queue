@@ -3,87 +3,62 @@
 #include <stddef.h>
 
 /*
- * Increment a pointer into a queue, wrapping as needed
- *
- * Arguments:
- *   - The queue associated with the pointer
- *   - A reference to the pointer to be incremented
- * Note: arguments are not checked. Ensure that:
- *   - The queue is valid
- *   - The pointer target is inside the queue's buffer
+ * Private
  */
-static void increment_ptr(const queue_t *q, uint8_t **ptr)
+
+static inline
+uint8_t * wraparound(const queue_t *q, uint8_t *ptr)
 {
-	uint8_t *newPtr = ++(*ptr);
+	if(ptr >= q->buff + q->size )
+		ptr = q->buff;
 
-	if(newPtr >= (q->buff + q->size))
-		newPtr = q->buff;
-
-	*ptr = newPtr;
+	return ptr;
 }
 
-static bool isEmpty(const queue_t *q)
-{
-	return q->tail == NULL;
-}
-
-static bool isFull(const queue_t *q)
-{
-	return q->tail == q->head;
-}
-
-static void setEmpty(queue_t *q)
-{
-	q->tail = NULL;
-}
+/*
+ * Public
+ */
 
 bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 {
 	if(!q || !buffer || !size)
 		return false;
 
-	q->buff = buffer;
-	q->head = buffer;
-	q->size = size;
-	setEmpty(q);
+	q->buff  = buffer;
+	q->head  = buffer;
+	q->tail  = buffer;
+	q->size  = size;
+	q->empty = true;
+	q->full  = false;
 
 	return true;
 }
 
 void q_push(queue_t *q, uint8_t value)
 {
-	if(!q)
-		return;
-
-	if(isFull(q))
+	if(!q || q->full)
 		return;
 
 	*q->head = value;
-
-	if(isEmpty(q))
-		q->tail = q->head;
-
-	increment_ptr(q, &q->head);
+	q->head  = wraparound(q, q->head+1);
+	q->empty = false;
+	q->full  = (q->tail == q->head);
 }
 
 uint8_t q_pop(queue_t *q)
 {
-	if(!q)
-		return 0;
-
-	if(isEmpty(q))
+	if(!q || q->empty)
 		return 0;
 
 	uint8_t value = *q->tail;
-	increment_ptr(q, &q->tail);
-
-	if(q->tail == q->head)
-		setEmpty(q);
+	q->tail  = wraparound(q, q->tail+1);
+	q->full  = false;
+	q->empty = (q->tail == q->head);
 
 	return value;
 }
 
-size_t q_max(queue_t *q)
+size_t q_size(queue_t *q)
 {
 	if(!q)
 		return 0;
