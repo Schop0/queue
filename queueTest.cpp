@@ -134,14 +134,12 @@ TEST(queue, maxSize)
 }
 
 // Store and retrieve more than the maximum elements, in smaller batches
-/* incorrectly passing test, add bounds protection to force a failure first
 TEST(queue, maxElementsMultipleTimes)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(q_max(&queue));
 	test_push_pop_random_data(q_max(&queue));
 }
-*/
 
 // Do not write outside the storage bounds
 TEST(queue, boundsProtection)
