@@ -78,16 +78,6 @@ TEST(queue, maxElementsSimultaneous)
 	test_push_pop_random_data(q_max(&queue), 0);
 }
 
-// Internal workings, should not be tested
-TEST(queue, initQueue)
-{
-	CHECK(q_init(&queue, buffer, sizeof buffer));
-	UNSIGNED_LONGS_EQUAL(sizeof buffer, queue.size);
-	POINTERS_EQUAL(buffer, queue.buff);
-	POINTERS_EQUAL(buffer, queue.head);
-	POINTERS_EQUAL(buffer, queue.tail);
-}
-
 // Do not dereference null pointer
 TEST(queue, initNull)
 {
