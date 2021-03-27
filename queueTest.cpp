@@ -33,17 +33,18 @@ TEST_GROUP(queue)
 		BYTES_EQUAL(value, q_pop(&queue));
 	}
 
-	void test_push_pop_random_data(size_t length)
+	void test_push_pop_random_data(size_t push_length, unsigned int ignore_end)
 	{
-		uint8_t data[length];
+		uint8_t data[push_length];
+		size_t pop_length = push_length - ignore_end;
 		unsigned int i;
 
-		for(i=0; i<length; i++) {
+		for(i=0; i<push_length; i++) {
 			data[i] = RANDVALUE;
 			q_push(&queue, data[i]);
 		}
 
-		for(i=0; i<length; i++)
+		for(i=0; i<pop_length; i++)
 			BYTES_EQUAL(data[i], q_pop(&queue));
 	}
 };
@@ -67,14 +68,14 @@ TEST(queue, twoElementsSequential)
 TEST(queue, twoElementsSimultaneous)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	test_push_pop_random_data(2);
+	test_push_pop_random_data(2, 0);
 }
 
 // Store and retrieve the maximum number of elements
 TEST(queue, maxElementsSimultaneous)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	test_push_pop_random_data(q_max(&queue));
+	test_push_pop_random_data(q_max(&queue), 0);
 }
 
 // Internal workings, should not be tested
@@ -137,8 +138,8 @@ TEST(queue, maxSize)
 TEST(queue, maxElementsMultipleTimes)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
-	test_push_pop_random_data(q_max(&queue));
-	test_push_pop_random_data(q_max(&queue));
+	test_push_pop_random_data(q_max(&queue), 0);
+	test_push_pop_random_data(q_max(&queue), 0);
 }
 
 // Do not write outside the storage bounds
