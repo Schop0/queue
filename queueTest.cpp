@@ -4,9 +4,10 @@
 #include <cstring>
 #include <iostream>
 
-#define TESTSIZE_SMALL 2
+#define TESTSIZE_SMALL 5
 #define TESTSIZE_LARGE 1025
 #define TESTVALUE 0x55
+#define MARKVALUE 0xAA
 #define RANDVALUE (rand() % 0xff)
 
 TEST_GROUP(queue)
@@ -133,7 +134,35 @@ TEST(queue, maxSize)
 }
 
 // Store and retrieve more than the maximum elements, in smaller batches
+/* incorrectly passing test, add bounds protection to force a failure first
+TEST(queue, maxElementsMultipleTimes)
+{
+	CHECK(q_init(&queue, buffer, sizeof buffer));
+	test_push_pop_random_data(q_max(&queue));
+	test_push_pop_random_data(q_max(&queue));
+}
+*/
+
 // Do not write outside the storage bounds
+TEST(queue, boundsProtection)
+{
+	size_t usable_size = (sizeof buffer) - 2;
+	buffer[0] = MARKVALUE;
+	buffer[usable_size+1] = MARKVALUE;
+
+	CHECK(q_init(&queue, &buffer[1], usable_size));
+
+	size_t q_size = q_max(&queue);
+	UNSIGNED_LONGS_EQUAL(usable_size, q_size);
+
+	unsigned int overflow = 1;
+	for(unsigned int i = 0; i < q_size+overflow; i++)
+		q_push(&queue, TESTVALUE);
+
+	BYTES_EQUAL(MARKVALUE, buffer[0]);
+	BYTES_EQUAL(MARKVALUE, buffer[usable_size+1]);
+}
+
 // Do not clobber elements when full, reject more
 // Accept all possible binary values for data
 // (how?) multiple independent instances
