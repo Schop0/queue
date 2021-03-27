@@ -82,23 +82,8 @@ TEST(queue, maxElementsSimultaneous)
 TEST(queue, initNull)
 {
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
-}
-
-// Do not dereference null pointer
-TEST(queue, pushToNull)
-{
 	q_push(NULL, RANDVALUE);
-}
-
-// Do not dereference null pointer
-TEST(queue, popFromNull)
-{
 	q_pop(NULL);
-}
-
-// Do not dereference null pointer
-TEST(queue, maxSizeOfNull)
-{
 	q_max(NULL);
 }
 
@@ -106,11 +91,6 @@ TEST(queue, maxSizeOfNull)
 TEST(queue, initNullData)
 {
 	CHECK_FALSE(q_init(&queue, NULL, sizeof buffer));
-}
-
-// Refuse to intialise with a zero size buffer
-TEST(queue, initZeroSize)
-{
 	CHECK_FALSE(q_init(&queue, buffer, 0));
 }
 
