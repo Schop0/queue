@@ -159,10 +159,21 @@ TEST(queue, boundsProtection)
 	BYTES_EQUAL(MARKVALUE, buffer[usable_size+1]);
 }
 
+// Reject popping from an empty queue
+TEST(queue, pushAfterPopFromEmpty)
+{
+	CHECK(q_init(&queue, buffer, sizeof buffer));
+
+	q_pop(&queue);
+	test_push_pop(RANDVALUE);
+
+	q_pop(&queue);
+	test_push_pop_random_data(q_max(&queue), 0);
+}
+
 // Do not clobber elements when full, reject more
 // Accept all possible binary values for data
 // Let caller detect a failed push
-// Reject popping from an empty queue
 // Let caller detect a failed pop
 // Provide a way to determine free space
 // Provide a way to determine used space
