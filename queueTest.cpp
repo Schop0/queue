@@ -150,11 +150,8 @@ TEST(queue, boundsProtection)
 
 	CHECK(q_init(&queue, &buffer[1], usable_size));
 
-	size_t q_size = q_max(&queue);
-	UNSIGNED_LONGS_EQUAL(usable_size, q_size);
-
 	unsigned int overflow = 1;
-	for(unsigned int i = 0; i < q_size+overflow; i++)
+	for(unsigned int i = 0; i < usable_size+overflow; i++)
 		q_push(&queue, TESTVALUE);
 
 	BYTES_EQUAL(MARKVALUE, buffer[0]);
