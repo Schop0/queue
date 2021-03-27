@@ -47,12 +47,14 @@ TEST_GROUP(queue)
 	}
 };
 
+// Store and retrieve one value
 TEST(queue, singleElement)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop(TESTVALUE);
 }
 
+// Store and retrieve multiple values one at a time
 TEST(queue, twoElementsSequential)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
@@ -60,18 +62,21 @@ TEST(queue, twoElementsSequential)
 	test_push_pop(RANDVALUE);
 }
 
+// Store and retrieve multiple values simultaneously in fifo order
 TEST(queue, twoElementsSimultaneous)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(2);
 }
 
+// Store and retrieve the maximum number of elements
 TEST(queue, maxElementsSimultaneous)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(q_max(&queue));
 }
 
+// Internal workings, should not be tested
 TEST(queue, initQueue)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
@@ -81,36 +86,43 @@ TEST(queue, initQueue)
 	POINTERS_EQUAL(buffer, queue.tail);
 }
 
+// Do not dereference null pointer
 TEST(queue, initNull)
 {
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 }
 
+// Do not dereference null pointer
 TEST(queue, pushToNull)
 {
 	q_push(NULL, RANDVALUE);
 }
 
+// Do not dereference null pointer
 TEST(queue, popFromNull)
 {
 	q_pop(NULL);
 }
 
+// Do not dereference null pointer
 TEST(queue, maxSizeOfNull)
 {
 	q_max(NULL);
 }
 
+// Refuse to intialise without a buffer
 TEST(queue, initNullData)
 {
 	CHECK_FALSE(q_init(&queue, NULL, sizeof buffer));
 }
 
+// Refuse to intialise with a zero size buffer
 TEST(queue, initZeroSize)
 {
 	CHECK_FALSE(q_init(&queue, buffer, 0));
 }
 
+// Maximum number of elements matches storage size
 TEST(queue, maxSize)
 {
 	CHECK(q_init(&queue, buffer, sizeof buffer));
@@ -119,3 +131,12 @@ TEST(queue, maxSize)
 	CHECK(q_init(&queue, bigbuf, sizeof bigbuf));
 	UNSIGNED_LONGS_EQUAL(sizeof bigbuf, q_max(&queue));
 }
+
+// Store and retrieve more than the maximum elements, in smaller batches
+// Do not write outside the storage bounds
+// Do not clobber elements when full, reject more
+// Accept all possible binary values for data
+// (how?) multiple independent instances
+// (every method) Do not dereference null pointers
+// (every method) Do not dereference pointers outside the storage area
+// (every method) Do not change storage location and size
