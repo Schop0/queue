@@ -142,6 +142,14 @@ TEST(queue, pushAfterPopFromEmpty)
 }
 
 // Accept all possible binary values for data
+TEST(queue, acceptAnyValue)
+{
+	CHECK(q_init(&queue, buffer, sizeof buffer));
+	
+	for(unsigned int i=0; i<=UINT8_MAX; i++)
+		test_push_pop((uint8_t)i);
+}
+
 // Let caller detect a failed push
 // Let caller detect a failed pop
 // Provide a way to determine free space
