@@ -133,6 +133,7 @@ TEST(queue, maxElementsMultipleTimes)
 }
 
 // Do not write outside the storage bounds
+// Do not clobber elements when full, reject more
 TEST(queue, boundsProtection)
 {
 	size_t usable_size = (sizeof buffer) - 2;
@@ -142,8 +143,7 @@ TEST(queue, boundsProtection)
 	CHECK(q_init(&queue, &buffer[1], usable_size));
 
 	unsigned int overflow = 1;
-	for(unsigned int i = 0; i < usable_size+overflow; i++)
-		q_push(&queue, TESTVALUE);
+	test_push_pop_random_data(usable_size+overflow, overflow);
 
 	BYTES_EQUAL(MARKVALUE, buffer[0]);
 	BYTES_EQUAL(MARKVALUE, buffer[usable_size+1]);
@@ -161,7 +161,6 @@ TEST(queue, pushAfterPopFromEmpty)
 	test_push_pop_random_data(q_max(&queue), 0);
 }
 
-// Do not clobber elements when full, reject more
 // Accept all possible binary values for data
 // Let caller detect a failed push
 // Let caller detect a failed pop
