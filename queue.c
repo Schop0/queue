@@ -1,5 +1,7 @@
 #include "queue.h"
 
+#include <stddef.h>
+
 /*
  * Increment a pointer into a queue, wrapping as needed
  *
@@ -20,6 +22,16 @@ static void increment_ptr(const queue_t *q, uint8_t **ptr)
 	*ptr = newPtr;
 }
 
+static bool isEmpty(const queue_t *q)
+{
+	return q->tail == NULL;
+}
+
+static void setEmpty(queue_t *q)
+{
+	q->tail = NULL;
+}
+
 bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 {
 	if(!q || !buffer || !size)
@@ -27,8 +39,8 @@ bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 
 	q->buff = buffer;
 	q->head = buffer;
-	q->tail = buffer;
 	q->size = size;
+	setEmpty(q);
 
 	return true;
 }
@@ -39,6 +51,10 @@ void q_push(queue_t *q, uint8_t value)
 		return;
 
 	*q->head = value;
+
+	if(isEmpty(q))
+		q->tail = q->head;
+	
 	increment_ptr(q, &q->head);
 }
 
@@ -47,8 +63,14 @@ uint8_t q_pop(queue_t *q)
 	if(!q)
 		return 0;
 
+	if(isEmpty(q))
+		return 0;
+
 	uint8_t value = *q->tail;
 	increment_ptr(q, &q->tail);
+
+	if(q->tail == q->head)
+		setEmpty(q);
 
 	return value;
 }
