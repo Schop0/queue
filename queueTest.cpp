@@ -10,56 +10,65 @@
 #define MARKVALUE 0xAA
 #define RANDVALUE (rand() % 0xff)
 
+static uint8_t buffer[TESTSIZE_SMALL];
+static uint8_t bigbuf[TESTSIZE_LARGE];
+static queue_t queue;
+
+static void common_setup()
+{
+	memset(buffer, MARKVALUE, sizeof buffer);
+	memset(bigbuf, MARKVALUE, sizeof buffer);
+	memset(&queue, MARKVALUE, sizeof queue );
+	srand(TESTVALUE);
+}
+
+static  void test_push_pop(uint8_t value)
+{
+	q_push(&queue, value);
+	BYTES_EQUAL(value, q_pop(&queue));
+}
+
+static  void test_push_pop_random_data(size_t push_length, unsigned int ignore_end)
+{
+	uint8_t data[push_length];
+	size_t pop_length = push_length - ignore_end;
+	unsigned int i;
+
+	for(i=0; i<push_length; i++) {
+		data[i] = RANDVALUE;
+		q_push(&queue, data[i]);
+	}
+
+	for(i=0; i<pop_length; i++)
+		BYTES_EQUAL(data[i], q_pop(&queue));
+}
+
 TEST_GROUP(queue)
 {
-	uint8_t buffer[TESTSIZE_SMALL];
-	uint8_t bigbuf[TESTSIZE_LARGE]; // Not initialised
-	queue_t queue;
-
 	void setup()
 	{
-		memset(buffer, MARKVALUE, sizeof buffer);
-		memset(&queue, MARKVALUE, sizeof queue );
-		srand(TESTVALUE);
+		common_setup();
+		CHECK(q_init(&queue, buffer, sizeof buffer));
 	}
+};
 
-	void teardown()
+TEST_GROUP(queue_noInit)
+{
+	void setup()
 	{
-	}
-
-	void test_push_pop(uint8_t value)
-	{
-		q_push(&queue, value);
-		BYTES_EQUAL(value, q_pop(&queue));
-	}
-
-	void test_push_pop_random_data(size_t push_length, unsigned int ignore_end)
-	{
-		uint8_t data[push_length];
-		size_t pop_length = push_length - ignore_end;
-		unsigned int i;
-
-		for(i=0; i<push_length; i++) {
-			data[i] = RANDVALUE;
-			q_push(&queue, data[i]);
-		}
-
-		for(i=0; i<pop_length; i++)
-			BYTES_EQUAL(data[i], q_pop(&queue));
+		common_setup();
 	}
 };
 
 // Store and retrieve one value
 TEST(queue, singleElement)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop(TESTVALUE);
 }
 
 // Store and retrieve multiple values one at a time
 TEST(queue, twoElementsSequential)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop(RANDVALUE);
 	test_push_pop(RANDVALUE);
 }
@@ -67,19 +76,17 @@ TEST(queue, twoElementsSequential)
 // Store and retrieve multiple values simultaneously in fifo order
 TEST(queue, twoElementsSimultaneous)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(2, 0);
 }
 
 // Store and retrieve the maximum number of elements
 TEST(queue, maxElementsSimultaneous)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(q_size(&queue), 0);
 }
 
 // Do not dereference null pointer
-TEST(queue, initNull)
+TEST(queue_noInit, initNull)
 {
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 	q_push(NULL, RANDVALUE);
@@ -88,7 +95,7 @@ TEST(queue, initNull)
 }
 
 // Refuse to intialise without a buffer
-TEST(queue, initNullData)
+TEST(queue_noInit, initNullData)
 {
 	CHECK_FALSE(q_init(&queue, NULL, sizeof buffer));
 	CHECK_FALSE(q_init(&queue, buffer, 0));
@@ -97,7 +104,6 @@ TEST(queue, initNullData)
 // Maximum number of elements matches storage size
 TEST(queue, maxSize)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	UNSIGNED_LONGS_EQUAL(sizeof buffer, q_size(&queue));
 
 	CHECK(q_init(&queue, bigbuf, sizeof bigbuf));
@@ -107,14 +113,13 @@ TEST(queue, maxSize)
 // Store and retrieve more than the maximum elements, in smaller batches
 TEST(queue, maxElementsMultipleTimes)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
 	test_push_pop_random_data(q_size(&queue), 0);
 	test_push_pop_random_data(q_size(&queue), 0);
 }
 
 // Do not write outside the storage bounds
 // Do not clobber elements when full, reject more
-TEST(queue, boundsProtection)
+TEST(queue_noInit, boundsProtection)
 {
 	size_t usable_size = (sizeof buffer) - 2;
 	buffer[0] = MARKVALUE;
@@ -132,8 +137,6 @@ TEST(queue, boundsProtection)
 // Reject popping from an empty queue
 TEST(queue, pushAfterPopFromEmpty)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
-
 	q_pop(&queue);
 	test_push_pop(RANDVALUE);
 
@@ -144,8 +147,6 @@ TEST(queue, pushAfterPopFromEmpty)
 // Accept all possible binary values for data
 TEST(queue, acceptAnyValue)
 {
-	CHECK(q_init(&queue, buffer, sizeof buffer));
-	
 	for(unsigned int i=0; i<=UINT8_MAX; i++)
 		test_push_pop((uint8_t)i);
 }
