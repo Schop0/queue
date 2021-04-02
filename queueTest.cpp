@@ -152,6 +152,16 @@ TEST(queue, acceptAnyValue)
 }
 
 // Let caller detect a failed push
+TEST(queue, reportFailedPush)
+{
+	CHECK_FALSE(q_push(NULL, TESTVALUE));
+
+	for(int i = q_size(&queue); i > 0; i--)
+		CHECK(q_push(&queue, TESTVALUE));
+
+	CHECK_FALSE(q_push(&queue, TESTVALUE));
+}
+
 // Let caller detect a failed pop
 // Provide a way to determine free space
 // Provide a way to determine used space
