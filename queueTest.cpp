@@ -151,18 +151,31 @@ TEST(queue, acceptAnyValue)
 		test_push_pop((uint8_t)i);
 }
 
-// Let caller detect a failed push
+// Let caller detect a failed push or pop
 TEST(queue, reportFailedPush)
 {
-	CHECK_FALSE(q_push(NULL, TESTVALUE));
+	uint8_t returnValueIgnored;
 
+	// Do not dereference NULL
+	CHECK_FALSE(q_push(NULL, TESTVALUE));
+	CHECK_FALSE(q_pop_checked(NULL, &returnValueIgnored));
+	CHECK_FALSE(q_pop_checked(&queue, NULL));
+
+	// Fill up
 	for(int i = q_size(&queue); i > 0; i--)
 		CHECK(q_push(&queue, TESTVALUE));
 
+	// Do not push to a full queue
 	CHECK_FALSE(q_push(&queue, TESTVALUE));
+
+	// Empty out
+	for(int i = q_size(&queue); i > 0; i--)
+		CHECK(q_pop_checked(&queue, &returnValueIgnored));
+
+	// Do not pop from an empty queue
+	CHECK_FALSE(q_pop_checked(&queue, &returnValueIgnored));
 }
 
-// Let caller detect a failed pop
 // Provide a way to determine free space
 // Provide a way to determine used space
 // (how?) multiple independent instances
