@@ -77,3 +77,22 @@ size_t q_size(const queue_t *q)
 
 	return q->size;
 }
+
+size_t q_used(const queue_t *q)
+{
+	if(!q)
+		return 0;
+
+	if(q->empty)
+		return 0;
+
+	if(q->head > q->tail)
+		return q->head - q->tail;
+	else
+		return q->size - (q->tail - q->head);
+}
+
+size_t q_free(const queue_t *q)
+{
+	return q_size(q) - q_used(q);
+}
