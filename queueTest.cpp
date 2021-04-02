@@ -56,6 +56,14 @@ TEST_GROUP(queue)
 		common_setup();
 		CHECK(q_init(&queue, buffer, sizeof buffer));
 	}
+
+	void verify_fill_levels(queue_t *q, size_t expected_usage, const char *text = "")
+	{
+		const size_t size = q_size(q);
+
+		LONGS_EQUAL_TEXT(       expected_usage, q_used(q), text);
+		LONGS_EQUAL_TEXT(size - expected_usage, q_free(q), text);
+	}
 };
 
 TEST_GROUP(queue_noInit)
@@ -189,6 +197,50 @@ TEST(queue, reportFailedPush)
 
 // Provide a way to determine free space
 // Provide a way to determine used space
+TEST(queue, getFreeUsedSpace)
+{
+	const size_t size = q_size(&queue);
+	uint8_t returnValueIgnored;
+	size_t used = 0;
+
+	verify_fill_levels(&queue, used, "Initially empty");
+
+	// Fill
+	while(used < size)
+	{
+		q_push(&queue, TESTVALUE);
+		used++;
+		verify_fill_levels(&queue, used, "Filling up");
+	}
+
+	// Try to push when full
+	q_push(&queue, TESTVALUE);
+	verify_fill_levels(&queue, size, "Overfill");
+
+	// A freshly filled queue may wrap ring buffer pointers,
+	// this may present an edge case in pointer arithmetic
+	q_pop(&queue, &returnValueIgnored);
+	used--;
+	verify_fill_levels(&queue, used, "Edge case pop");
+	q_push(&queue, TESTVALUE);
+	used++;
+	verify_fill_levels(&queue, used, "Edge case push");
+
+	// Empty
+	while(used > 0)
+	{
+		q_pop(&queue, &returnValueIgnored);
+		used--;
+		verify_fill_levels(&queue, used, "Emptying out");
+	}
+
+	// Try to pop when empty
+	q_pop(&queue, &returnValueIgnored);
+	verify_fill_levels(&queue, 0, "Empty again");
+}
+
+// Provide convenience method to determine completely empty
+// Provide convenience method to determine completely full
 // (how?) multiple independent instances
 // (every method) Do not dereference null pointers
 // (every method) Do not dereference pointers outside the storage area
