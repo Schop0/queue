@@ -47,25 +47,15 @@ bool q_push(queue_t *q, uint8_t value)
 	return true;
 }
 
-uint8_t q_pop(queue_t *q)
-{
-	if(!q || q->empty)
-		return 0;
-
-	uint8_t value = *q->tail;
-	q->tail  = wraparound(q, q->tail+1);
-	q->full  = false;
-	q->empty = (q->tail == q->head);
-
-	return value;
-}
-
-bool q_pop_checked(queue_t *q, uint8_t *value)
+bool q_pop(queue_t *q, uint8_t *value)
 {
 	if(!q || q->empty)
 		return false;
 
-	*value = q_pop(q);
+	*value = *q->tail;
+	q->tail  = wraparound(q, q->tail+1);
+	q->full  = false;
+	q->empty = (q->tail == q->head);
 
 	return true;
 }

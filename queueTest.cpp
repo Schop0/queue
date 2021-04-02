@@ -24,8 +24,10 @@ static void common_setup()
 
 static  void test_push_pop(uint8_t value)
 {
+	uint8_t returnValue;
 	q_push(&queue, value);
-	BYTES_EQUAL(value, q_pop(&queue));
+	q_pop(&queue, &returnValue);
+	BYTES_EQUAL(value, returnValue);
 }
 
 static  void test_push_pop_random_data(size_t push_length, unsigned int ignore_end)
@@ -40,7 +42,11 @@ static  void test_push_pop_random_data(size_t push_length, unsigned int ignore_e
 	}
 
 	for(i=0; i<pop_length; i++)
-		BYTES_EQUAL(data[i], q_pop(&queue));
+	{
+		uint8_t returnValue;
+		q_pop(&queue, &returnValue);
+		BYTES_EQUAL(data[i], returnValue);
+	}
 }
 
 TEST_GROUP(queue)
@@ -88,9 +94,12 @@ TEST(queue, maxElementsSimultaneous)
 // Do not dereference null pointer
 TEST(queue_noInit, initNull)
 {
+	uint8_t returnValue;
+
 	CHECK_FALSE(q_init(NULL, buffer, sizeof buffer));
 	q_push(NULL, RANDVALUE);
-	q_pop(NULL);
+	q_pop(NULL, NULL);
+	q_pop(NULL, &returnValue);
 	q_size(NULL);
 }
 
@@ -137,10 +146,12 @@ TEST(queue_noInit, boundsProtection)
 // Reject popping from an empty queue
 TEST(queue, pushAfterPopFromEmpty)
 {
-	q_pop(&queue);
+	uint8_t returnValue;
+
+	q_pop(&queue, &returnValue);
 	test_push_pop(RANDVALUE);
 
-	q_pop(&queue);
+	q_pop(&queue, &returnValue);
 	test_push_pop_random_data(q_size(&queue), 0);
 }
 
@@ -158,8 +169,8 @@ TEST(queue, reportFailedPush)
 
 	// Do not dereference NULL
 	CHECK_FALSE(q_push(NULL, TESTVALUE));
-	CHECK_FALSE(q_pop_checked(NULL, &returnValueIgnored));
-	CHECK_FALSE(q_pop_checked(&queue, NULL));
+	CHECK_FALSE(q_pop(NULL, &returnValueIgnored));
+	CHECK_FALSE(q_pop(&queue, NULL));
 
 	// Fill up
 	for(int i = q_size(&queue); i > 0; i--)
@@ -170,10 +181,10 @@ TEST(queue, reportFailedPush)
 
 	// Empty out
 	for(int i = q_size(&queue); i > 0; i--)
-		CHECK(q_pop_checked(&queue, &returnValueIgnored));
+		CHECK(q_pop(&queue, &returnValueIgnored));
 
 	// Do not pop from an empty queue
-	CHECK_FALSE(q_pop_checked(&queue, &returnValueIgnored));
+	CHECK_FALSE(q_pop(&queue, &returnValueIgnored));
 }
 
 // Provide a way to determine free space
