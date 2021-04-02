@@ -60,6 +60,16 @@ uint8_t q_pop(queue_t *q)
 	return value;
 }
 
+bool q_pop_checked(queue_t *q, uint8_t *value)
+{
+	if(!q || q->empty)
+		return false;
+
+	*value = q_pop(q);
+
+	return true;
+}
+
 size_t q_size(queue_t *q)
 {
 	if(!q)
