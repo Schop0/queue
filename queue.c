@@ -36,31 +36,41 @@ bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 
 bool q_push(queue_t *q, uint8_t value)
 {
+	// Reject pushing to a missing or full queue
 	if(!q || q->full)
 		return false;
 
+	// Push
 	*q->head = value;
 	q->head  = wraparound(q, q->head+1);
 	q->empty = false;
-	q->full  = (q->tail == q->head);
+
+	// When the head catches the tail, the queue is full
+	if(q->tail == q->head)
+		q->full = true;
 
 	return true;
 }
 
 bool q_pop(queue_t *q, uint8_t *value)
 {
+	// Reject popping from a missing or empty queue
 	if(!q || q->empty)
 		return false;
 
-	*value = *q->tail;
+	// Pop
+	*value   = *q->tail;
 	q->tail  = wraparound(q, q->tail+1);
 	q->full  = false;
-	q->empty = (q->tail == q->head);
+
+	// When the tail catches the head, the queue is empty
+	if(q->tail == q->head)
+		q->empty = true;
 
 	return true;
 }
 
-size_t q_size(queue_t *q)
+size_t q_size(const queue_t *q)
 {
 	if(!q)
 		return 0;
