@@ -34,15 +34,17 @@ bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 	return true;
 }
 
-void q_push(queue_t *q, uint8_t value)
+bool q_push(queue_t *q, uint8_t value)
 {
 	if(!q || q->full)
-		return;
+		return false;
 
 	*q->head = value;
 	q->head  = wraparound(q, q->head+1);
 	q->empty = false;
 	q->full  = (q->tail == q->head);
+
+	return true;
 }
 
 uint8_t q_pop(queue_t *q)

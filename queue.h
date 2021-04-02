@@ -11,6 +11,6 @@ typedef struct {
 } queue_t;
 
 bool    q_init(queue_t *q, uint8_t *buffer, size_t size);
-void    q_push(queue_t *q, uint8_t value);
+bool    q_push(queue_t *q, uint8_t value);
 uint8_t q_pop (queue_t *q);
 size_t  q_size(queue_t *q);
