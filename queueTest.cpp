@@ -63,6 +63,16 @@ TEST_GROUP(queue)
 
 		LONGS_EQUAL_TEXT(       expected_usage, q_used(q), text);
 		LONGS_EQUAL_TEXT(size - expected_usage, q_free(q), text);
+
+		if(0 == expected_usage)
+			CHECK(q_empty(q));
+		else
+			CHECK_FALSE(q_empty(q));
+
+		if(size == expected_usage)
+			CHECK(q_full(q));
+		else
+			CHECK_FALSE(q_full(q));
 	}
 };
 
@@ -195,8 +205,11 @@ TEST(queue, reportFailedPush)
 	CHECK_FALSE(q_pop(&queue, &returnValueIgnored));
 }
 
-// Provide a way to determine free space
-// Provide a way to determine used space
+// Provide methods to determine:
+// - size free
+// - size used
+// - queue is empty
+// - queue is full
 TEST(queue, getFreeUsedSpace)
 {
 	const size_t size = q_size(&queue);
@@ -239,8 +252,6 @@ TEST(queue, getFreeUsedSpace)
 	verify_fill_levels(&queue, 0, "Empty again");
 }
 
-// Provide convenience method to determine completely empty
-// Provide convenience method to determine completely full
 // (how?) multiple independent instances
 // (every method) Do not dereference null pointers
 // (every method) Do not dereference pointers outside the storage area
