@@ -70,6 +70,22 @@ bool q_pop(queue_t *q, uint8_t *value)
 	return true;
 }
 
+bool q_empty(const queue_t *q)
+{
+	if(!q)
+		return 0;
+
+	return q->empty;
+}
+
+bool q_full(const queue_t *q)
+{
+	if(!q)
+		return 0;
+
+	return q->full;
+}
+
 size_t q_size(const queue_t *q)
 {
 	if(!q)
