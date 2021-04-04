@@ -3,17 +3,11 @@
 #include <stddef.h>
 
 /*
- * Private
+ * Private prototypes
  */
 
 static inline
-uint8_t * wraparound(const queue_t *q, uint8_t *ptr)
-{
-	if(ptr >= q->buff + q->size )
-		ptr = q->buff;
-
-	return ptr;
-}
+uint8_t * wraparound(const queue_t *q, uint8_t *ptr);
 
 /*
  * Public
@@ -21,7 +15,7 @@ uint8_t * wraparound(const queue_t *q, uint8_t *ptr)
 
 bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 {
-	if(!q || !buffer || !size)
+	if((NULL == q) || (NULL == buffer) || (0 == size))
 		return false;
 
 	q->buff  = buffer;
@@ -37,7 +31,7 @@ bool q_init(queue_t *q, uint8_t *buffer, size_t size)
 bool q_push(queue_t *q, uint8_t value)
 {
 	// Reject pushing to a missing or full queue
-	if(!q || q->full)
+	if((NULL == q) || q->full)
 		return false;
 
 	// Push
@@ -55,7 +49,7 @@ bool q_push(queue_t *q, uint8_t value)
 bool q_pop(queue_t *q, uint8_t *value)
 {
 	// Reject popping from a missing or empty queue
-	if(!q || q->empty)
+	if((NULL == q) || q->empty)
 		return false;
 
 	// Pop
@@ -72,7 +66,7 @@ bool q_pop(queue_t *q, uint8_t *value)
 
 bool q_empty(const queue_t *q)
 {
-	if(!q)
+	if (NULL == q)
 		return 0;
 
 	return q->empty;
@@ -80,7 +74,7 @@ bool q_empty(const queue_t *q)
 
 bool q_full(const queue_t *q)
 {
-	if(!q)
+	if (NULL == q)
 		return 0;
 
 	return q->full;
@@ -88,7 +82,7 @@ bool q_full(const queue_t *q)
 
 size_t q_size(const queue_t *q)
 {
-	if(!q)
+	if (NULL == q)
 		return 0;
 
 	return q->size;
@@ -96,19 +90,41 @@ size_t q_size(const queue_t *q)
 
 size_t q_used(const queue_t *q)
 {
-	if(!q)
+	if(NULL == q)
 		return 0;
+
+	size_t used = 0;
 
 	if(q->empty)
-		return 0;
-
-	if(q->head > q->tail)
-		return q->head - q->tail;
+		used = 0;
 	else
-		return q->size - (q->tail - q->head);
+	if(q->full)
+		used = q->size;
+	else
+	if(q->head > q->tail)
+		used = q->head - q->tail;
+	else
+		used = q->size - (q->tail - q->head);
+
+	return used;
 }
 
 size_t q_free(const queue_t *q)
 {
 	return q_size(q) - q_used(q);
+}
+
+/*
+ * Private
+ */
+
+static inline
+uint8_t * wraparound(const queue_t *q, uint8_t *ptr)
+{
+	const uint8_t *out_of_bound = q->buff + q->size;
+
+	while (out_of_bound <= ptr)
+		ptr -= q->size;
+
+	return ptr;
 }
