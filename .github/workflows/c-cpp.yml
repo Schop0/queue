@@ -21,12 +21,8 @@ jobs:
       with:
         path: cpputest
         key: ${{ runner.os }}-cpputest-${{ env.CPPUTEST_VERSION }}
-    - name: init
-      run: ./init
-      if: steps.cache.outputs.cache-hit != 'true'
     - name: make
       run: make
-      working-directory: source
     - name: install doxygen
       run: sudo apt install -y doxygen graphviz
     - name: generate documentation
@@ -34,5 +30,5 @@ jobs:
     - name: upload documentation
       uses: actions/upload-artifact@v2
       with:
-        name: Documentation
+        name: queue-doc
         path: doc/html

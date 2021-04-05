@@ -1,8 +1,0 @@
-#!/bin/sh
-
-git submodule update --init --recursive
-
-cd cpputest || exit
-autoreconf . -i
-./configure
-make tdd
