@@ -256,11 +256,6 @@ TEST(queue, getFreeUsedSpace)
 	verify_fill_levels(&queue, 0, "Empty again");
 }
 
-TEST(queue, failingStatusBadge)
-{
-	FAIL("Please visually confirm that the status badge on Github reflects this failure");
-}
-
 // (how?) multiple independent instances
 // (every method) Do not dereference null pointers
 // (every method) Do not dereference pointers outside the storage area
