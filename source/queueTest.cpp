@@ -1,3 +1,15 @@
+/** @file queueTest.cpp
+ *
+ * @brief Unit tests for queue
+ *
+ * These tests use the CppUTest framework
+ *
+ * @par Copyright:
+ * © 2021 Peter Buijs
+ *
+ * @par License:
+ * SPDX-License-Identifier: MIT
+ */
 #include "CppUTest/TestHarness.h"
 
 extern "C"
@@ -260,3 +272,5 @@ TEST(queue, getFreeUsedSpace)
 // (every method) Do not dereference null pointers
 // (every method) Do not dereference pointers outside the storage area
 // (every method) Do not change storage location and size
+
+/*** end of file ***/

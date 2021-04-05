@@ -1,3 +1,11 @@
+/** @file queue.c
+ *
+ * @par Copyright:
+ * © 2021 Peter Buijs
+ *
+ * @par License:
+ * SPDX-License-Identifier: MIT
+ */
 #include "queue.h"
 
 #include <stddef.h>
@@ -126,3 +134,5 @@ uint8_t * wraparound(const queue_t *q, uint8_t *ptr)
 
 	return ptr;
 }
+
+/*** end of file ***/
