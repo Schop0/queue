@@ -1,6 +1,10 @@
 #include "CppUTest/TestHarness.h"
 
-#include "queue.hpp"
+extern "C"
+{
+#include "queue.h"
+}
+
 #include <cstring>
 #include <iostream>
 
