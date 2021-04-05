@@ -13,17 +13,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: check cpputest dependency version
+      run: echo "CPPUTEST_VERSION=$(git submodule status | awk '{print $1}')" >> $GITHUB_ENV
+    - name: cache
+      id: cache
+      uses: actions/cache@v2
       with:
-        submodules: recursive
-    - name: cpputest autoreconf
-      run: autoreconf . -i
-      working-directory: cpputest
-    - name: cpputest configure
-      run: ./configure
-      working-directory: cpputest
-    - name: cpputest make
-      run: make tdd
-      working-directory: cpputest
-    - name: queue make
+        path: cpputest
+        key: ${{ runner.os }}-cpputest-${{ env.CPPUTEST_VERSION }}
+    - name: init
+      run: ./init
+      if: steps.cache.outputs.cache-hit != 'true'
+    - name: make
       run: make
       working-directory: source
