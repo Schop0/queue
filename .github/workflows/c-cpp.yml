@@ -27,3 +27,13 @@ jobs:
     - name: make
       run: make
       working-directory: source
+    - name: install doxygen
+      run: sudo apt install -y doxygen graphviz
+    - name: generate documentation
+      run: doxygen
+      working-directory: doc
+    - name: upload documentation
+      uses: actions/upload-artifact@v2
+      with:
+        name: Documentation
+        path: doc/html
