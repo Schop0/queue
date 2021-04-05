@@ -2,14 +2,14 @@
 
 #include <stddef.h>
 
-/*
+/*!
  * Private prototypes
  */
 
 static inline
 uint8_t * wraparound(const queue_t *q, uint8_t *ptr);
 
-/*
+/*!
  * Public
  */
 
@@ -110,7 +110,7 @@ size_t q_free(const queue_t *q)
 	return q_size(q) - q_used(q);
 }
 
-/*
+/*!
  * Private
  */
 
