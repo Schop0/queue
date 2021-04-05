@@ -11,10 +11,10 @@ cpputest/configure: cpputest/.git
 cpputest/Makefile: cpputest/configure
 	cd cpputest && ./configure
 
-cpputest/lib: cpputest/Makefile
+cpputest/lib/CppUTestExt cpputest/lib/CppUTest &: cpputest/Makefile
 	$(MAKE) -C cpputest
 
-cpputest: cpputest/lib
+cpputest: cpputest/lib/CppUTestExt cpputest/lib/CppUTest
 
 queue: cpputest
 	$(MAKE) -C source
