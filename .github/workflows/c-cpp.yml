@@ -1,0 +1,29 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: cpputest autoreconf
+      run: autoreconf . -i
+      working-directory: cpputest
+    - name: cpputest configure
+      run: ./configure
+      working-directory: cpputest
+    - name: cpputest make
+      run: make tdd
+      working-directory: cpputest
+    - name: queue make
+      run: make
+      working-directory: source
